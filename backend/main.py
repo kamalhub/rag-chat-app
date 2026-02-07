@@ -86,10 +86,10 @@ async def status():
 @app.post("/ingest", response_model=IngestResponse)
 async def ingest(file: UploadFile = File(...)):
     """
-    Upload a .txt, .md, or .pdf file, chunk it, embed it and add to the FAISS store.
+    Upload a .txt, .md, .pdf, or .docx file, chunk it, embed it and add to the FAISS store.
     """
-    if not file.filename.endswith((".txt", ".md", ".pdf")):
-        raise HTTPException(status_code=400, detail="Only .txt, .md, and .pdf files are supported.")
+    if not file.filename.endswith((".txt", ".md", ".pdf", ".docx")):
+        raise HTTPException(status_code=400, detail="Only .txt, .md, .pdf, and .docx files are supported.")
 
     dest = UPLOAD_DIR / file.filename
     with open(dest, "wb") as f:

@@ -11,6 +11,7 @@ dependencies = [
     "langchain-openai>=0.3,<1",
     "faiss-cpu>=1.9,<2",
     "pypdf>=5.1,<6",
+    "docx2txt>=0.8",
     "python-multipart>=0.0.20",
     "python-dotenv>=1,<2",
 ]
