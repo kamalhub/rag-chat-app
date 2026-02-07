@@ -1,0 +1,95 @@
+RAG (Retrieval-Augmented Generation) Overview
+================================================
+
+Retrieval-Augmented Generation (RAG) is a technique that combines information retrieval
+with text generation to produce more accurate and grounded responses from language models.
+Instead of relying solely on the knowledge baked into model weights during training,
+RAG systems fetch relevant documents at inference time and feed them as context to the LLM.
+
+How RAG Works
+-------------
+
+1. **Document Ingestion**: Raw documents (PDFs, text files, web pages) are loaded and split
+   into smaller chunks. Each chunk is converted into a dense vector using an embedding model
+   and stored in a vector database (e.g., FAISS, Pinecone, Chroma).
+
+2. **Query Processing**: When a user asks a question, the query is also embedded into a vector
+   using the same embedding model.
+
+3. **Retrieval**: The system performs a similarity search in the vector database to find the
+   top-k most relevant document chunks for the given query.
+
+4. **Generation**: The retrieved chunks are passed as context to the LLM along with the
+   original question. The LLM generates a response grounded in this context.
+
+Benefits of RAG
+---------------
+
+- **Reduced Hallucinations**: By grounding answers in actual documents, RAG significantly
+  reduces the tendency of LLMs to generate plausible-sounding but incorrect information.
+
+- **Up-to-date Knowledge**: Unlike fine-tuned models that have a knowledge cutoff, RAG
+  systems can access the latest documents in the vector store.
+
+- **Source Attribution**: RAG makes it easy to cite sources since the retrieved chunks
+  can be traced back to their original documents.
+
+- **Cost Effective**: Updating knowledge is as simple as adding new documents to the
+  vector store, avoiding expensive model retraining.
+
+Common RAG Architectures
+-------------------------
+
+- **Naive RAG**: Simple retrieve-then-generate pipeline. Works well for straightforward
+  question-answering tasks.
+
+- **Advanced RAG**: Adds pre-retrieval and post-retrieval optimizations such as query
+  rewriting, re-ranking, and contextual compression.
+
+- **Modular RAG**: Breaks the pipeline into composable modules (routing, retrieval,
+  generation, validation) that can be mixed and matched.
+
+Vector Databases
+-----------------
+
+Popular vector databases for RAG include:
+
+- FAISS (Facebook AI Similarity Search): Open-source, in-memory, excellent for prototyping.
+- Pinecone: Managed cloud vector database with horizontal scaling.
+- Chroma: Lightweight, developer-friendly, embeddable vector store.
+- Weaviate: Open-source with hybrid search (vector + keyword).
+- Qdrant: High-performance vector database written in Rust.
+
+Chunking Strategies
+--------------------
+
+Effective chunking is crucial for RAG performance:
+
+- **Fixed-size chunking**: Split text into equal-sized chunks (e.g., 500 tokens each).
+- **Recursive chunking**: Split by paragraphs, then sentences, then characters.
+- **Semantic chunking**: Use embeddings to detect topic boundaries.
+- **Document-aware chunking**: Respect document structure (headings, sections, tables).
+
+Embedding Models
+-----------------
+
+Common embedding models used in RAG:
+
+- OpenAI text-embedding-3-small: Good balance of quality and cost.
+- OpenAI text-embedding-3-large: Higher quality, more dimensions.
+- Cohere embed-v3: Strong multilingual support.
+- BGE (BAAI): Open-source, competitive performance.
+- E5 (Microsoft): Open-source, instruction-tuned embeddings.
+
+Evaluation Metrics
+-------------------
+
+RAG systems are typically evaluated using:
+
+- **Faithfulness**: Does the answer stay true to the retrieved context?
+- **Relevance**: Are the retrieved documents actually relevant to the question?
+- **Answer Correctness**: Is the generated answer factually correct?
+- **Context Precision**: What fraction of retrieved chunks are actually useful?
+- **Context Recall**: Does the retrieval capture all necessary information?
+
+Tools like RAGAS and TruLens are commonly used for automated RAG evaluation.

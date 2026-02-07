@@ -1,0 +1,18 @@
+[project]
+name = "rag-backend"
+version = "0.1.0"
+description = "RAG Chat API — LangChain + FAISS + FastAPI"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115,<1",
+    "uvicorn>=0.34,<1",
+    "langchain>=0.3,<1",
+    "langchain-community>=0.3,<1",
+    "langchain-openai>=0.3,<1",
+    "faiss-cpu>=1.9,<2",
+    "python-multipart>=0.0.20",
+    "python-dotenv>=1,<2",
+]
+
+[project.scripts]
+dev = "uvicorn main:app --reload --port 8000"
