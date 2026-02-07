@@ -5,7 +5,9 @@ Encapsulates document loading, chunking, embedding, vector storage (FAISS),
 and retrieval-augmented generation using LangChain.
 """
 
-from langchain_community.document_loaders import TextLoader
+from pathlib import Path
+
+from langchain_community.document_loaders import TextLoader, PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_community.vectorstores import FAISS
@@ -55,8 +57,12 @@ class RAGPipeline:
     # Ingest
     # ------------------------------------------------------------------
     def ingest(self, file_path: str) -> int:
-        """Load a text file, split into chunks, embed and store in FAISS."""
-        loader = TextLoader(file_path, encoding="utf-8")
+        """Load a text or PDF file, split into chunks, embed and store in FAISS."""
+        ext = Path(file_path).suffix.lower()
+        if ext == ".pdf":
+            loader = PyPDFLoader(file_path)
+        else:
+            loader = TextLoader(file_path, encoding="utf-8")
         documents = loader.load()
         chunks = self.splitter.split_documents(documents)
 

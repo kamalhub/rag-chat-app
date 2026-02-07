@@ -2,7 +2,7 @@
 
 A simple Retrieval-Augmented Generation (RAG) application with a **Python/LangChain** backend and a **Next.js/React** chat frontend.
 
-Upload `.txt` or `.md` documents, and then ask questions — the app retrieves relevant chunks and generates grounded answers using OpenAI.
+Upload `.txt`, `.md`, or `.pdf` documents, and then ask questions — the app retrieves relevant chunks and generates grounded answers using OpenAI.
 
 ---
 
@@ -67,7 +67,7 @@ Open `http://localhost:3000` in your browser.
 
 ## Usage
 
-1. **Upload a document** — Click the upload area in the sidebar and select a `.txt` or `.md` file. A sample file (`sample_data.txt`) is included in the backend folder.
+1. **Upload a document** — Click the upload area in the sidebar and select a `.txt`, `.md`, or `.pdf` file. A sample file (`sample_data.txt`) is included in the backend folder.
 2. **Ask questions** — Type a question in the chat input and press Enter or click Send.
 3. **View sources** — Expandable source cards appear below each answer showing the retrieved context chunks.
 
@@ -79,7 +79,7 @@ Open `http://localhost:3000` in your browser.
 |--------|-----------|------------------------------------|
 | GET    | `/health` | Health check                       |
 | GET    | `/status` | Returns vector store document count|
-| POST   | `/ingest` | Upload and ingest a `.txt`/`.md`   |
+| POST   | `/ingest` | Upload and ingest a `.txt`/`.md`/`.pdf` |
 | POST   | `/chat`   | Send a message and get a RAG answer|
 
 ---
@@ -119,7 +119,6 @@ rag-app/
 
 Some ideas for next steps:
 
-- **Add PDF support** — use `PyPDFLoader` from LangChain
 - **Persist the vector store** — save/load FAISS index to disk
 - **Conversation memory** — add `ConversationBufferMemory` for multi-turn chat
 - **Streaming responses** — use FastAPI `StreamingResponse` + SSE on the frontend
