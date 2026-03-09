@@ -116,6 +116,27 @@
   color: var(--text-muted);
 }
 
+.exportBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  transition: color 0.15s, border-color 0.15s;
+}
+.exportBtn:hover:not(:disabled) {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.exportBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 .sendBtn {
   display: flex;
   align-items: center;

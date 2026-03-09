@@ -41,11 +41,11 @@ export default function FileUpload({ onUploaded }: Props) {
     <div className={styles.wrapper}>
       <label className={styles.dropzone}>
         <Upload size={20} />
-        <span>Upload .txt, .md, or .pdf</span>
+        <span>Upload .txt, .md, .pdf, or .docx</span>
         <input
           ref={inputRef}
           type="file"
-          accept=".txt,.md,.pdf"
+          accept=".txt,.md,.pdf,.docx"
           onChange={handleFile}
           className={styles.hidden}
         />

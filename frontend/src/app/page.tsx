@@ -27,7 +27,8 @@ export default function Home() {
     <div className={styles.container}>
       {/* ---- Sidebar ---- */}
       <aside className={styles.sidebar}>
-        <h1 className={styles.logo}>RAG Chat</h1>
+        <h1 className={styles.logo}>SPRKTech magic</h1>
+        <p className={styles.subtitle}>DecisionForge</p>
         <p className={styles.tagline}>Chat with your documents</p>
 
         <div className={styles.divider} />
