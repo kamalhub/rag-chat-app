@@ -5,17 +5,21 @@ A FastAPI server that provides a RAG (Retrieval-Augmented Generation) pipeline
 using LangChain, FAISS vector store, and OpenAI embeddings/LLM.
 """
 
+import io
 import os
 import shutil
+from datetime import datetime
 from pathlib import Path
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from rag import RAGPipeline
+from export_pdf import generate_chat_pdf
 
 load_dotenv()
 
@@ -68,6 +72,16 @@ class StatusResponse(BaseModel):
     num_documents: int
 
 
+class ExportMessage(BaseModel):
+    role: str  # "user" or "assistant"
+    text: str
+    sources: list[dict] = []
+
+
+class ExportRequest(BaseModel):
+    messages: list[ExportMessage]
+
+
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
@@ -107,3 +121,22 @@ async def chat(req: ChatRequest):
 
     answer, sources = rag.query(req.message)
     return ChatResponse(answer=answer, sources=sources)
+
+
+@app.post("/export")
+async def export_chat(req: ExportRequest):
+    """Export the chat conversation as a downloadable PDF."""
+    if not req.messages:
+        raise HTTPException(status_code=400, detail="No messages to export.")
+
+    messages = [m.model_dump() for m in req.messages]
+    pdf_bytes = generate_chat_pdf(messages)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"rag_chat_{timestamp}.pdf"
+
+    return StreamingResponse(
+        io.BytesIO(pdf_bytes),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )

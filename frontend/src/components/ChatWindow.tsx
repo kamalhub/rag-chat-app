@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect, FormEvent } from "react";
-import { Send } from "lucide-react";
-import { sendMessage, ChatResponse } from "@/lib/api";
+import { Send, Download } from "lucide-react";
+import { sendMessage, exportChat, ChatResponse } from "@/lib/api";
 import SourceCard from "./SourceCard";
 import styles from "./ChatWindow.module.css";
 
@@ -17,6 +17,7 @@ export default function ChatWindow() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -119,6 +120,30 @@ export default function ChatWindow() {
           placeholder="Ask a question about your documents..."
           disabled={loading}
         />
+        <button
+          type="button"
+          className={styles.exportBtn}
+          disabled={messages.length === 0 || exporting}
+          title="Export chat as PDF"
+          onClick={async () => {
+            setExporting(true);
+            try {
+              await exportChat(
+                messages.map((m) => ({
+                  role: m.role,
+                  text: m.text,
+                  sources: m.sources ?? [],
+                }))
+              );
+            } catch {
+              /* silently fail — could add toast here */
+            } finally {
+              setExporting(false);
+            }
+          }}
+        >
+          <Download size={18} />
+        </button>
         <button
           type="submit"
           className={styles.sendBtn}

@@ -8,10 +8,12 @@ dependencies = [
     "uvicorn>=0.34,<1",
     "langchain>=0.3,<1",
     "langchain-community>=0.3,<1",
+    "langchain-experimental>=0.3,<1",
     "langchain-openai>=0.3,<1",
     "faiss-cpu>=1.9,<2",
-    "pypdf>=5.1,<6",
+    "pypdf[crypto]>=5.1,<6",
     "docx2txt>=0.8",
+    "reportlab>=4.2,<5",
     "python-multipart>=0.0.20",
     "python-dotenv>=1,<2",
 ]
