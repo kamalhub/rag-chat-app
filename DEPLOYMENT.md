@@ -40,12 +40,19 @@ git push -u origin main
    - Go to the **Variables** tab
    - Click **"New Variable"**
    - Add: `OPENAI_API_KEY` = `your-actual-key`
-   - (Optional) Add: `MONGODB_URI` = `mongodb+srv://...` to persist document data in JSON format
+   - (Optional) Add: `MONGODB_URI` — copy from your Railway MongoDB service (Variables → `MONGO_URL`), append `/rag` for the database name
 
-6. Railway will auto-deploy. Once it's live, go to **Settings** → **Networking** → **Generate Domain**.
+6. **Seed MongoDB** (if using MongoDB): From your machine, run:
+   ```bash
+   cd backend
+   MONGODB_URI="your-railway-mongodb-uri" uv run python seed_mortgage_applications.py
+   ```
+   Use the same `MONGODB_URI` you set for the backend. The script creates the "Mortgage Application" collection with sample documents.
+
+7. Railway will auto-deploy. Once it's live, go to **Settings** → **Networking** → **Generate Domain**.
    You'll get a URL like `https://rag-chat-app-production-xxxx.up.railway.app`.
 
-7. Test it by visiting `https://your-railway-url.up.railway.app/docs` — you should see the FastAPI Swagger UI.
+8. Test it by visiting `https://your-railway-url.up.railway.app/docs` — you should see the FastAPI Swagger UI.
 
 ### Notes
 - Railway's free tier gives you $5/month of usage, which is enough for light testing.

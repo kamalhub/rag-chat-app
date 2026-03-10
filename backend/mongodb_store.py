@@ -69,7 +69,7 @@ def store_document(
             "file_type": Path(file_path).suffix.lower(),
             "num_chunks": num_chunks,
             "chunks": chunks,
-            "ingested_at": datetime.utcnow().isoformat() + "Z",
+            "ingested_at": datetime.now(datetime.UTC).isoformat(),
         }
 
         col.insert_one(doc)
