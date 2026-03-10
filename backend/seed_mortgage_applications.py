@@ -42,7 +42,7 @@ def _sample_documents():
             "documentID": str(uuid.uuid4()),
             "application_type": "Full Mortgage Application",
             "reason_for_mortgage": "Your main residence",
-            "created_at": datetime.utcnow().isoformat() + "Z",
+            "created_at": datetime.now(datetime.UTC).isoformat(),
             "status": "Submitted",
             "applicants": [
                 {
@@ -161,7 +161,7 @@ def _sample_documents():
             "documentID": str(uuid.uuid4()),
             "application_type": "Decision In Principle",
             "reason_for_mortgage": "Your main residence",
-            "created_at": datetime.utcnow().isoformat() + "Z",
+            "created_at": datetime.now(datetime.UTC).isoformat(),
             "status": "Pending",
             "applicants": [
                 {
@@ -244,7 +244,7 @@ def _sample_documents():
             "documentID": str(uuid.uuid4()),
             "application_type": "Full Mortgage Application",
             "reason_for_mortgage": "Your main residence",
-            "created_at": datetime.utcnow().isoformat() + "Z",
+            "created_at": datetime.now(datetime.UTC).isoformat(),
             "status": "Under Review",
             "applicants": [
                 {
