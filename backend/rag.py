@@ -17,14 +17,17 @@ Chunking strategy
 from pathlib import Path
 
 from langchain_community.document_loaders import TextLoader, PyPDFLoader, Docx2txtLoader
+from langchain_core.documents import Document
+from PIL import Image
+import pytesseract
 from langchain.text_splitter import RecursiveCharacterTextSplitter, MarkdownHeaderTextSplitter
 from langchain_experimental.text_splitter import SemanticChunker
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 from langchain_core.documents import Document
-
 
 SYSTEM_TEMPLATE = """\
 You are a helpful assistant that answers questions based on the provided context.
@@ -142,19 +145,30 @@ class RAGPipeline:
     # ------------------------------------------------------------------
     # Ingest
     # ------------------------------------------------------------------
-    def ingest(self, file_path: str) -> int:
-        """Load a text, PDF, or Word file, split into chunks, embed and store in FAISS."""
+    def ingest(self, file_path: str) -> tuple[int, list[dict]]:
+        """Load a text, PDF, or Word file, split into chunks, embed and store in FAISS.
+        Returns (num_chunks, chunks_data) where chunks_data is JSON-serializable for storage."""
         ext = Path(file_path).suffix.lower()
 
         # --- Load ---
         if ext == ".pdf":
             loader = PyPDFLoader(file_path)
+            documents = loader.load()
         elif ext == ".docx":
             loader = Docx2txtLoader(file_path)
+            documents = loader.load()
+        elif ext in (".png", ".jpg", ".jpeg"):
+            img = Image.open(file_path)
+            text = pytesseract.image_to_string(img)
+            documents = [
+                Document(
+                    page_content=text.strip() or "No text could be extracted from this image.",
+                    metadata={"source": file_path},
+                )
+            ]
         else:
             loader = TextLoader(file_path, encoding="utf-8")
-
-        documents = loader.load()
+            documents = loader.load()
 
         # --- Chunk ---
         if ext == ".md":
@@ -163,7 +177,7 @@ class RAGPipeline:
             chunks = self._split_generic(documents)
 
         if not chunks:
-            return 0
+            return 0, [], []
 
         # --- Embed & store ---
         if self.vectorstore is None:
@@ -171,18 +185,31 @@ class RAGPipeline:
         else:
             self.vectorstore.add_documents(chunks)
 
-        return len(chunks)
+        # Build JSON-serializable chunk data for optional MongoDB storage
+        chunks_data = [
+            {
+                "content": c.page_content,
+                "source": c.metadata.get("source", "unknown"),
+                "metadata": {k: str(v) for k, v in c.metadata.items()},
+            }
+            for c in chunks
+        ]
+        return len(chunks), chunks_data
 
     # ------------------------------------------------------------------
     # Query
     # ------------------------------------------------------------------
-    def query(self, question: str) -> tuple[str, list[dict]]:
+    def query(self, question: str, model: str | None = None) -> tuple[str, list[dict]]:
         """Run a RAG query and return (answer, source_documents)."""
         if self.vectorstore is None:
             return "No documents have been ingested yet.", []
 
+        if model and model.startswith("claude-"):
+            llm = ChatAnthropic(model=model, temperature=0)
+        else:
+            llm = ChatOpenAI(model=model, temperature=0) if model else self.llm
         chain = RetrievalQA.from_chain_type(
-            llm=self.llm,
+            llm=llm,
             chain_type="stuff",
             retriever=self.vectorstore.as_retriever(search_kwargs={"k": self.k}),
             return_source_documents=True,
