@@ -13,7 +13,11 @@ interface Message {
   sources?: ChatResponse["sources"];
 }
 
-export default function ChatWindow() {
+interface Props {
+  model?: string;
+}
+
+export default function ChatWindow({ model }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -35,7 +39,7 @@ export default function ChatWindow() {
     setLoading(true);
 
     try {
-      const res = await sendMessage(text);
+      const res = await sendMessage(text, model);
       const assistantMsg: Message = {
         id: crypto.randomUUID(),
         role: "assistant",

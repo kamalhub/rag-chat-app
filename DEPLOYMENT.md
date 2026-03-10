@@ -36,10 +36,11 @@ git push -u origin main
    - Go to **Settings** → **Root Directory** → set it to `backend`
    - Railway will auto-detect the `Dockerfile` and use it.
 
-5. Add your environment variable:
+5. Add your environment variables:
    - Go to the **Variables** tab
    - Click **"New Variable"**
    - Add: `OPENAI_API_KEY` = `your-actual-key`
+   - (Optional) Add: `MONGODB_URI` = `mongodb+srv://...` to persist document data in JSON format
 
 6. Railway will auto-deploy. Once it's live, go to **Settings** → **Networking** → **Generate Domain**.
    You'll get a URL like `https://rag-chat-app-production-xxxx.up.railway.app`.

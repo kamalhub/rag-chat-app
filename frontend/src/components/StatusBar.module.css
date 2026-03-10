@@ -1,10 +1,17 @@
 .bar {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 8px;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
   background: var(--surface-2);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
+  font-weight: 500;
   color: var(--text-muted);
+  border: 1px solid transparent;
+}
+
+.bar svg {
+  flex-shrink: 0;
+  opacity: 0.8;
 }

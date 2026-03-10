@@ -108,10 +108,32 @@ rag-app/
 
 ## Configuration
 
-| Variable               | Default                  | Description           |
-|------------------------|--------------------------|-----------------------|
-| `OPENAI_API_KEY`       | (required)               | Your OpenAI API key   |
-| `NEXT_PUBLIC_API_URL`  | `http://localhost:8000`  | Backend URL for the UI|
+| Variable               | Default                  | Description                                           |
+|------------------------|--------------------------|-------------------------------------------------------|
+| `OPENAI_API_KEY`       | (required)               | Your OpenAI API key                                   |
+| `NEXT_PUBLIC_API_URL`  | `http://localhost:8000`  | Backend URL for the UI                                |
+| `MONGODB_URI`          | (optional)               | MongoDB connection string to store document data as JSON |
+
+### Mortgage Application sample data
+
+1. **Start MongoDB** (if not already running):
+
+   ```bash
+   docker compose up -d mongodb
+   ```
+
+2. **Set MONGODB_URI** in `.env` at the project root:
+
+   ```
+   MONGODB_URI=mongodb://localhost:27017/rag
+   ```
+
+3. **Seed the collection**:
+
+   ```bash
+   cd backend
+   uv run python seed_mortgage_applications.py
+   ```
 
 ---
 

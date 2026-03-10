@@ -19,11 +19,30 @@ export interface IngestResponse {
   num_chunks: number;
 }
 
-export async function sendMessage(message: string): Promise<ChatResponse> {
+export interface ModelOption {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface ModelsResponse {
+  models: ModelOption[];
+}
+
+export async function getModels(): Promise<ModelsResponse> {
+  const res = await fetch(`${API_BASE}/models`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+export async function sendMessage(
+  message: string,
+  model?: string | null
+): Promise<ChatResponse> {
   const res = await fetch(`${API_BASE}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message }),
+    body: JSON.stringify(model ? { message, model } : { message }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: "Unknown error" }));
@@ -42,6 +61,57 @@ export async function uploadFile(file: File): Promise<IngestResponse> {
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: "Upload failed" }));
     throw new Error(err.detail ?? `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export interface DocumentSummary {
+  filename: string;
+  num_chunks: number;
+  ingested_at: string;
+}
+
+export interface DocumentsListResponse {
+  documents: DocumentSummary[];
+}
+
+export async function getDocuments(): Promise<DocumentsListResponse> {
+  const res = await fetch(`${API_BASE}/documents`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+export async function getDocument(filename: string): Promise<unknown> {
+  const res = await fetch(`${API_BASE}/documents/${encodeURIComponent(filename)}`);
+  if (!res.ok) {
+    if (res.status === 404) throw new Error("Document not found");
+    throw new Error(`HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export interface MortgageApplicationSummary {
+  documentID: string;
+  label: string;
+}
+
+export interface MortgageApplicationsResponse {
+  applications: MortgageApplicationSummary[];
+}
+
+export async function getMortgageApplications(): Promise<MortgageApplicationsResponse> {
+  const res = await fetch(`${API_BASE}/mortgage-applications`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+export async function getMortgageApplication(documentID: string): Promise<unknown> {
+  const res = await fetch(
+    `${API_BASE}/mortgage-applications/${encodeURIComponent(documentID)}`
+  );
+  if (!res.ok) {
+    if (res.status === 404) throw new Error("Mortgage application not found");
+    throw new Error(`HTTP ${res.status}`);
   }
   return res.json();
 }

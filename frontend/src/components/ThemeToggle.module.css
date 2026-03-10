@@ -1,0 +1,24 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border: 1px solid transparent;
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
+}
+
+.button:hover {
+  color: var(--primary);
+  background: var(--surface-hover);
+}
+
+.placeholder {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: var(--border);
+}
