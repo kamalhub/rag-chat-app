@@ -67,10 +67,14 @@ git push -u origin main
    - **Framework Preset:** Next.js (should be auto-detected)
    - **Root Directory:** Click "Edit" and set it to `frontend`
 
-5. Add the environment variable so the frontend knows where the backend is:
-   - Expand **"Environment Variables"**
-   - Add: `NEXT_PUBLIC_API_URL` = `https://your-railway-url.up.railway.app`
-     (use the Railway URL from step 2.6 above)
+5. Add the environment variables:
+   - `NEXT_PUBLIC_API_URL` = `https://your-railway-url.up.railway.app`
+   - `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` = (see below) — **required** to fix "Failed to find Server Action" on redeploy
+
+   Generate the encryption key (run once, use the same value for all deploys):
+   ```bash
+   openssl rand -base64 32
+   ```
 
 6. Click **"Deploy"**. Vercel will build and deploy automatically.
 
@@ -124,3 +128,10 @@ Then push the change — Railway will auto-redeploy.
 **"No documents ingested" error:**
 - The FAISS store is in-memory and starts empty after each deploy.
 - Upload a document via the UI first before chatting.
+
+**"Failed to find Server Action" (older/newer deployment):**
+- Happens when the browser has cached an old build and the server has a new one.
+- **Fix:** Set `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` in your frontend's environment variables (at build time).
+- Generate a key: `openssl rand -base64 32`
+- Add it to Vercel/Railway Variables and redeploy.
+- Users can also do a hard refresh (Ctrl+Shift+R) to clear the cache.
